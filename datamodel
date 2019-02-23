@@ -1,0 +1,127 @@
+
+entity ResourceStat {
+	identifier String required,
+    begintime Long,
+    endtime Long,
+    value String,
+    message String
+}
+
+/**
+ * The Employee entity.
+ */
+entity Resource {
+	/**
+	* The firstname attribute.
+	*/
+	identifier String required,
+	serviceName String,
+	servicePlanName String,
+	serviceId String,
+	servicePlanId String,
+	frequency Long,
+	url String,
+    createdDate Date,
+    createBy String,
+    modifiedDate Date,
+    modifiedBy String, 
+	ResourceStatus ResourceStatus
+    
+}
+
+
+
+entity ResourceHistory {
+	identifier String,
+	fieldModified String,
+    oldValue String,
+    newValue String
+}
+
+enum ResourceStatus {
+    ACTIVE, REGISTERED, UNREGISTERED, INACTIVE
+}
+
+// defining multiple OneToMany relationships with comments
+relationship OneToMany {
+	
+	/**
+	* A relationship
+	*/
+	ResourceStat{Resource} to
+	/**
+	* Another side of the same relationship
+	*/
+	Resource
+}
+
+// defining multiple oneToOne relationships
+relationship OneToOne {
+	
+	ResourceHistory{Resource} to Resource
+}
+
+// Set pagination options
+paginate JobHistory, Resource with infinite-scroll
+
+
+========================
+
+
+
+//Service Monitor
+
+Service Monitoring provides monitoring solution.
+
+Data Model
+
+It has two main table 
+
+Resource
+	- identifier
+	- serviceName
+	- servicePlanName
+	- serviceId
+	- servicePlanId
+	- frequency
+	- url
+	- createdDate
+	- createBy
+	- modifiedDate
+	- modifiedBy
+	- ResourceStatus
+	
+Resource Stat
+	- identifier
+	- begintime
+	- endtime
+	- value
+	- message
+
+	
+Resource table is filled once the service owner fill service related detail, an api is exposed to fill this detail.
+
+ResourceStat is a time series table it keeps track of service availability
+
+API
+
+Create new service for monitoring
+POST /service-monitors/
+
+List all added services
+GET /service-monitors/
+
+Update service 
+PUT /service-monitor/{serviceId}
+
+Register a service for monitoring
+GET /service-monitor/{serviceId}/register
+
+Unregister a service for monitoring
+GET /service-monitor/{serviceId}/unregister
+
+Start service for monitoring
+GET /service-monitor/{serviceId}/start
+
+
+GET /service-monitor/{serviceId}?year=2019&week=1
